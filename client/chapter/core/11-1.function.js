@@ -72,9 +72,10 @@ function setCss(node, prop, value) {
 
     targetNode.style[prop] = value;
   }
-
-  throw new Error('value 인자 값의 타입은 문자열 또는 숫자만 가능합니다.');
 }
+
+setCss('.first', 'fontSize', '100px');
+setCss('.second', 'color', 'orange');
 
 // node의 값을 'h1'으로 받았을 경우
 // setCss('h1', 'color', 'blue');
@@ -93,3 +94,25 @@ function setCss(node, prop, value) {
 // 2. h1의 폰트 사이즈를 가져온다.
 // 3. 증가함수와 감소함수를 만든다.
 // 4. 클릭 이벤트와 바인딩한다.
+
+const second = document.querySelector('.second');
+
+function getCss(node, styleValue) {
+  if (!node || !styleValue) throw new Error('인자 값은 모두 필수요소입니다.');
+  let target = node;
+
+  if (typeof node === 'string') {
+    target = document.querySelector(node);
+  }
+
+  if (!(styleValue in document.body.style))
+    throw new ReferenceError(`${styleValue}는 올바른 CSS 속성 값이 아닙니다.`);
+  const result = target.style[styleValue];
+  return result;
+}
+
+function css(node, prop, value) {
+  return !value ? getCss(node, prop) : setCss(node, prop, value);
+}
+css('.second', 'fontSize', '3rem');
+console.log(css('.first', 'font-size'));
