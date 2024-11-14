@@ -3,6 +3,7 @@ class Todo {
     this.input = document.querySelector(input);
     this.button = document.querySelector(button);
     this.renderPlace = document.querySelector(renderPlace);
+    this.todoListArray = [];
     this.handleButton();
   }
 
@@ -16,13 +17,30 @@ class Todo {
 
   // 버튼에 이벤트 등록, input 값이 콘솔창에 나올 수 있도록.
 
+  addTodoData() {
+    this.todoListArray.push(this.currentInputTodoData);
+  }
+
+  createTag() {
+    return `<li>${this.currentInputTodoData}</li>`;
+  }
+
+  #render() {
+    this.renderPlace.insertAdjacentHTML('beforeend', this.createTag());
+  }
+
   handleClick() {
-    console.log(this.currentInputTodoData);
+    // console.log(this.currentInputTodoData);
+    this.#render();
     this.currentInputTodoData = '';
   }
 
   handleButton() {
-    this.button.addEventListener('click', () => this.handleClick());
+    this.button.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.addTodoData();
+      this.handleClick();
+    });
   }
 }
 
