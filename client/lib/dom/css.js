@@ -26,7 +26,7 @@ const css = (node, prop, value) => (!value ? getCss(node, prop) : setCss(node, p
 /*                                    css class                                   */
 /* -------------------------------------------------------------------------- */
 /**
- * @function addClass: Dom Element에 클래스를 추가하는 함수
+ * @function addClass Dom Element에 클래스를 추가하는 함수
  * @param {HTMLElement | string} node
  * @param {string | array | object} className
  * @returns {void}
