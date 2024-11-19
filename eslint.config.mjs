@@ -26,6 +26,7 @@ const dom = {
   addClass: true,
   removeClass: true,
   toggleClass: true,
+  clearContents: true,
 };
 
 const error = {
