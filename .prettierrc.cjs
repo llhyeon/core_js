@@ -11,9 +11,9 @@ module.exports = {
   // 객체 표기 괄호 사이 공백 추가 여부 (ex: { foo: bar })
   bracketSpacing: true,
   // 행폭 설정 (줄 길이가 설정 값보다 길어지면 자동 개행)
-  printWidth: 80,
+  printWidth: 180,
   // 산문 래핑 설정
-  proseWrap: 'preserve',
+  proseWrap: 'never',
   // 객체 속성 key 값에 인용 부호 사용 여부 (ex: { 'key': 'xkieo-xxxx' })
   quoteProps: 'as-needed',
   // 세미콜론(;) 사용 여부
@@ -26,4 +26,4 @@ module.exports = {
   trailingComma: 'es5',
   // 탭 사용 여부
   useTabs: false,
-}
+};
