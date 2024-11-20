@@ -29,4 +29,10 @@ function handleSubmit(e) {
   insertLast(result, jujeob);
 }
 
+// function handleCopy() {
+//   const text = this.textContent;
+//   console.log(text);
+// }
+
 submit.addEventListener('click', handleSubmit);
+// result.addEventListener('click', handleCopy);
