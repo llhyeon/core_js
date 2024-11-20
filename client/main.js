@@ -1,6 +1,7 @@
-import { insertLast, attr, diceAnimation, getNode, getNodes, endScroll, clearContents } from './lib/index.js';
+import { memo, insertLast, attr, diceAnimation, getNode, getNodes, endScroll, clearContents } from './lib/index.js';
 
 const [rollingButton, recordButton, resetButton] = getNodes('.buttonGroup > button');
+
 const table = getNode('.recordListWrapper');
 
 // 1. 주사위 굴리기 버튼을 선택하기
@@ -21,7 +22,7 @@ function createItem(value) {
 }
 
 function renderRecordItem() {
-  const diceNumber = +attr(getNode('#cube'), 'dice');
+  const diceNumber = +memo('cube').getAttribute('dice');
   insertLast('tbody', createItem(diceNumber));
 }
 
