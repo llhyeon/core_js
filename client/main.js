@@ -1,5 +1,5 @@
 import data from './data/data.js';
-import { addClass, getNode as $, clearContents, insertLast, getRandom, removeClass, showAlert, isNumber, isNumericString, shake } from './lib/index.js';
+import { addClass, getNode as $, clearContents, insertLast, getRandom, removeClass, showAlert, isNumber, isNumericString, shake, copy } from './lib/index.js';
 
 const submit = $('#submit');
 const input = $('#nameField');
@@ -29,10 +29,13 @@ function handleSubmit(e) {
   insertLast(result, jujeob);
 }
 
-// function handleCopy() {
-//   const text = this.textContent;
-//   console.log(text);
-// }
+function handleCopy() {
+  const text = this.textContent;
+
+  copy(text).then(() => {
+    showAlert('.alert-success', '클립보드 복사 완료');
+  });
+}
 
 submit.addEventListener('click', handleSubmit);
-// result.addEventListener('click', handleCopy);
+result.addEventListener('click', handleCopy);
