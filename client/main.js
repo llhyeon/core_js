@@ -1,41 +1,64 @@
-import data from './data/data.js';
-import { addClass, getNode as $, clearContents, insertLast, getRandom, removeClass, showAlert, isNumber, isNumericString, shake, copy } from './lib/index.js';
+import { insertLast, attr, diceAnimation, getNode, getNodes, endScroll, clearContents } from './lib/index.js';
 
-const submit = $('#submit');
-const input = $('#nameField');
-const result = $('.result');
+const [rollingButton, recordButton, resetButton] = getNodes('.buttonGroup > button');
+const table = getNode('.recordListWrapper');
 
-function handleSubmit(e) {
-  e.preventDefault();
-  const name = input.value;
+// 1. 주사위 굴리기 버튼을 선택하기
+// 2. 클릭 이벤트 바인딩
 
-  if (!name || name.replaceAll(' ', '') === '') {
-    showAlert('.alert-error', '공백은 허용되지 않습니다.', 1200);
-    shake(input);
-    return;
-  }
+let count = 0;
+let total = 0;
+function createItem(value) {
+  const template = /* html */ `
+  <tr>
+  <td>${++count}</td>
+  <td>${value}</td>
+  <td>${(total += value)}</td>
+  </tr>;
+  `;
 
-  if (!isNumericString(name)) {
-    showAlert('.alert-error', '정확한 이름을 입력해주세요', 1200);
-    shake(input);
-    return;
-  }
-  const list = data(name);
-
-  const randomIndex = getRandom(list.length);
-
-  const jujeob = list[randomIndex];
-  clearContents(result);
-  insertLast(result, jujeob);
+  return template;
 }
 
-function handleCopy() {
-  const text = this.textContent;
-
-  copy(text).then(() => {
-    showAlert('.alert-success', '클립보드 복사 완료');
-  });
+function renderRecordItem() {
+  const diceNumber = +attr(getNode('#cube'), 'dice');
+  insertLast('tbody', createItem(diceNumber));
 }
 
-submit.addEventListener('click', handleSubmit);
-result.addEventListener('click', handleCopy);
+const handleRollingDice = (() => {
+  let isClicked = false;
+  let id;
+
+  return () => {
+    if (!isClicked) {
+      id = setInterval(diceAnimation, 200);
+      recordButton.disabled = true;
+      resetButton.disabled = true;
+    } else {
+      clearInterval(id);
+      recordButton.disabled = false;
+      resetButton.disabled = false;
+    }
+    isClicked = !isClicked;
+  };
+})();
+
+const handleShowRecord = () => {
+  table.hidden = false;
+  renderRecordItem();
+  endScroll(table);
+};
+
+const handleReset = () => {
+  const tbody = getNode('tbody');
+  clearContents(tbody);
+  count = 0;
+  total = 0;
+  table.hidden = true;
+};
+
+// - 기록버튼을 누르면
+// 1. 기록 테이블이 등장하도록
+rollingButton.addEventListener('click', handleRollingDice);
+recordButton.addEventListener('click', handleShowRecord);
+resetButton.addEventListener('click', handleReset);
