@@ -1,65 +1,122 @@
-import { memo, insertLast, attr, diceAnimation, getNode, getNodes, endScroll, clearContents } from './lib/index.js';
+import {
+  clearContents,
+  delayP,
+  changeColor,
+  getNode,
+  kang,
+  renderLoadingSpinner,
+  renderUserCard,
+  renderEmptyCard,
+  getNodes,
+} from './lib/index.js';
 
-const [rollingButton, recordButton, resetButton] = getNodes('.buttonGroup > button');
+const END_POINT = 'http://localhost:3000/users';
+const userCardInner = getNode('.user-card-inner');
+const createButton = getNode('.create');
+const cancelButton = getNode('.cancel');
+const doneButton = getNode('.done');
+const inputs = getNodes('input');
 
-const table = getNode('.recordListWrapper');
+async function renderUserList() {
+  try {
+    renderLoadingSpinner(userCardInner);
+    const res = await kang.get(END_POINT);
+    // getNode('.loadingSpinner').remove();
 
-// 1. 주사위 굴리기 버튼을 선택하기
-// 2. 클릭 이벤트 바인딩
+    gsap.to('.loadingSpinner', {
+      opacity: 0,
+      // 애니메이션이 완료 됐을 시 동작하는 GSAP 제공 함수
+      onComplete() {
+        this._targets[0].remove();
+      },
+    });
+    const users = res.data;
+    await delayP(1000);
 
-let count = 0;
-let total = 0;
-function createItem(value) {
-  const template = /* html */ `
-  <tr>
-  <td>${++count}</td>
-  <td>${value}</td>
-  <td>${(total += value)}</td>
-  </tr>;
-  `;
+    users.forEach((user) => {
+      renderUserCard(userCardInner, user);
+    });
+    changeColor('.user-card');
 
-  return template;
+    gsap.from('.user-card', {
+      x: -100,
+      opacity: 0,
+      stagger: {
+        each: 0.1,
+        from: 'start',
+      },
+    });
+  } catch (err) {
+    gsap.to('.loadingSpinner', {
+      opacity: 0,
+      onComplete() {
+        this._targets[0].remove();
+      },
+    });
+    await delayP(1000);
+    renderEmptyCard(userCardInner);
+    console.error(err);
+  }
+}
+renderUserList();
+
+function handleDelete(e) {
+  const button = e.target.closest('button');
+
+  if (!button) return;
+
+  const index = button.parentElement.dataset.index.split('-')[1];
+
+  kang.delete(`${END_POINT}/${index}`).then(() => {
+    alert('삭제 완료');
+
+    clearContents(userCardInner);
+    renderUserList();
+  });
 }
 
-function renderRecordItem() {
-  const diceNumber = +memo('cube').getAttribute('dice');
-  insertLast('tbody', createItem(diceNumber));
+function handleCreate() {
+  this.classList.add('open');
+  gsap.to('.pop', {
+    autoAlpha: 1,
+  });
 }
 
-const handleRollingDice = (() => {
-  let isClicked = false;
-  let id;
+function handleCancel(e) {
+  e.stopPropagation();
+  // createButton.classList.remove('open');
+  gsap.to('.pop', {
+    autoAlpha: 0,
+  });
+}
 
-  return () => {
-    if (!isClicked) {
-      id = setInterval(diceAnimation, 200);
-      recordButton.disabled = true;
-      resetButton.disabled = true;
-    } else {
-      clearInterval(id);
-      recordButton.disabled = false;
-      resetButton.disabled = false;
-    }
-    isClicked = !isClicked;
+function handlePost(e) {
+  e.preventDefault();
+  const [name, email, website] = inputs;
+
+  const postData = {
+    name: name.value,
+    email: email.value,
+    website: website.value,
   };
-})();
 
-const handleShowRecord = () => {
-  table.hidden = false;
-  renderRecordItem();
-  endScroll(table);
-};
+  console.log(postData);
 
-const handleReset = () => {
-  const tbody = getNode('tbody');
-  clearContents(tbody);
-  count = 0;
-  total = 0;
-  table.hidden = true;
-};
+  kang.post(END_POINT, postData).then(() => {
+    gsap.to('.pop', {
+      autoAlpha: 0,
+    });
+    clearContents(userCardInner);
+    renderUserList();
 
-// - 기록버튼을 누르면
-// 1. 기록 테이블이 등장하도록
-rollingButton.addEventListener('click', handleRollingDice);
-recordButton.addEventListener('click', handleShowRecord);
-resetButton.addEventListener('click', handleReset);
+    name.value = '';
+    email.value = '';
+    website.value = '';
+  });
+}
+
+userCardInner.addEventListener('click', handleDelete);
+
+createButton.addEventListener('click', handleCreate);
+cancelButton.addEventListener('click', handleCancel);
+doneButton.addEventListener('click', handlePost);
