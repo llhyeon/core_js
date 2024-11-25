@@ -2,7 +2,6 @@ import { deleteStorage, getNode, getStorage, setStorage } from './lib/index.js';
 
 const input = getNode('#textField');
 const clearButton = getNode('button[data-name="clear"]');
-console.log(clearButton);
 
 function handleInput() {
   setStorage('userInput', input.value);
