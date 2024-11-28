@@ -1,49 +1,22 @@
-// console.log(temp.content.cloneNode(true));
+import { Button } from './components/Button/Button.js';
+import { Card } from './components/Card/Card.js';
+import { Counter } from './components/Counter/Counter.js';
+import { TodoItem } from './components/TodoItem/TodoItem.js';
+import { TodoList } from './components/TodoList/TodoList.js';
 
-class MyElement extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: 'open' });
-  }
+const app = document.getElementById('app');
 
-  handleClick() {
-    console.log('click !');
-  }
-
-  connectedCallback() {
-    this.render();
-    this.card = this.shadowRoot.querySelector('.card');
-
-    this.card.addEventListener('click', () => {
-      this.handleClick();
-    });
-  }
-
-  render() {
-    this.shadowRoot.innerHTML = /* html */ `
-    <style>
-      .card {
-        background: #eee
-      }
-    </style>
-      <div class="card">
-        <h2>Card Title</h2>
-        <slot name="me"></slot>
-        <p>description..</p>
-      </div>
-    `;
-    console.log(this.shadowRoot);
-  }
-
-  disconnectedCallback() {}
-
-  static get observedAttributes() {
-    return [];
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    console.log(name, oldValue, newValue);
-  }
+function defineElements() {
+  customElements.define('custom-button', Button);
+  customElements.define('custom-card', Card);
+  customElements.define('custom-counter', Counter);
+  customElements.define('custom-todo', TodoList);
+  customElements.define('custom-todo-item', TodoItem);
 }
 
-customElements.define('my-element', MyElement);
+defineElements();
+
+// app.append(buttonElement);
+
+const todoElement = document.createElement('custom-todo');
+app.append(todoElement);
