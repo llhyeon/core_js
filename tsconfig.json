@@ -1,14 +1,25 @@
 {
-  "include": ["src"], // 컴파일할 폴더명
   "compilerOptions": {
-    "outDir": "dist", // 내보낼 폴더명 설정
-    "target": "ESNext", // 내보낼 버전의 설정, ESNext는 항상 최신 버전으로
-    "moduleResolution": "node",
-    "skipLibCheck": true,
+    "target": "ES2020",
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
     "module": "ESNext",
-    "moduleDetection": "force", // 네임스페이스를 분리한다. 같은 파일에 동일한 명의 변수 설정 가능
-    // 여기까지가 기본 옵션
-    "strict": true, // 대부분의 TS 유저들이 이 옵션을 활성화 한다.
-    "noImplicitAny": false
-  }
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
+  },
+  "include": ["src"]
 }
