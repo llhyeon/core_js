@@ -1,1 +1,1 @@
-import "./Layout/Header.ts";
+import "@/Layout/Header.ts";

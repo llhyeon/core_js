@@ -1,6 +1,6 @@
 import { LitElement, html, css, CSSResultGroup } from "lit";
 
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import resetCss from "../Layout/resetCss";
 import getPbImageURL from "../api/getPbImageURL";
 import { Item, Product } from "../@types/type";
@@ -15,6 +15,8 @@ class ProductList extends LitElement {
     totalItems: 0,
     totalPages: 0,
   };
+
+  @state() isLogin: boolean = false;
 
   static styles: CSSResultGroup = [
     resetCss,
@@ -64,6 +66,17 @@ class ProductList extends LitElement {
           width: 100%;
         }
       }
+
+      .new-post {
+        padding: 0.5rem 1rem;
+        background-color: dodgerblue;
+        color: white;
+        border-radius: 20px;
+        position: fixed;
+        transform: translateX(-50%);
+        left: 50%;
+        bottom: 2rem;
+      }
     `,
   ];
 
@@ -78,6 +91,10 @@ class ProductList extends LitElement {
     const data = await response.json();
 
     this.data = data;
+
+    const { isAuth } = JSON.parse(localStorage.getItem("auth") ?? "{}");
+
+    this.isLogin = isAuth;
   }
 
   // attributeChangedCallback 과 같은 메서드
@@ -99,9 +116,9 @@ class ProductList extends LitElement {
       <div class="container">
         <ul>
           ${this.data.items.map(
-            (item: Item) => html`
+            (item) => html`
               <li class="product-item">
-                <a href="/">
+                <a href="${this.isLogin ? `/src/pages/detail/index.html?product=${item.id}` : `/`}">
                   <figure>
                     <img src=${getPbImageURL(item)} alt="" />
                   </figure>
@@ -120,6 +137,8 @@ class ProductList extends LitElement {
           )}
         </ul>
       </div>
+
+      <a class="new-post" href="/src/pages/newPost/">+ 상품추가</a>
     `;
   }
 }

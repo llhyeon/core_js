@@ -1,8 +1,20 @@
 import { defineConfig } from "vite";
+import { resolve } from "node:path";
 
-export default defineConfig({
+const config = defineConfig({
   resolve: {
-    // src로 들어가는 경로를 @로 변환한다.
     alias: [{ find: "@", replacement: "/src" }],
   },
+  build: {
+    outDir: "docs",
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, "index.html"),
+        product: resolve(__dirname, "src/pages/product/index.html"),
+        login: resolve(__dirname, "src/pages/login/index.html"),
+      },
+    },
+  },
 });
+
+export default config;
